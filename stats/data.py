@@ -1,27 +1,16 @@
-## Step 1
+import os
+import glob
+
 import pandas as pd
 
-## Step 2
-import matplotlib.pyplot as plt
+game_files = glob.glob(os.path.join(os.getcwd(), 'games', '*EVE'))
 
-## Step 3
-from data import games
+game_files.sort()
 
-## Step 4
-attendance = games.loc[(games['type'] == 'info') & (games['multi2'] == 'attendance'), ['year', 'multi3']]
+game_frames = []
+for game_file in game_files:
+    game_frame = pd.read_csv(game_file, names = ['type', 'multi2', 'multi3',
+    'multi4', 'multi5', 'multi6', 'event'])
+    game_frames.append(game_frame)
 
-## Step 5
-attendance.columns = ['year', 'attendance']
-
-## Step 6
-attendance.loc[:, 'attendance'] = pd.to_numeric(attendance.loc[:, 'attendance'])
-print(attendance)
-
-## Step 7 and 8
-attendance.plot(x = 'year', y = 'attendance', figsize = (15, 7), kind = 'bar')
-plt.xlabel('Year')
-plt.ylabel('Attendance')
-## Step 9
-plt.axhline(y = attendance['attendance'].mean(), label = 'Mean', linestyle = '--', color = 'green')
-
-plt.show()
+games = pd.concat(game_frames)
